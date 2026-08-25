@@ -1,0 +1,49 @@
+
+
+CLIUI.py									Client, console based user interface.
+
+	.input()									Get user input
+
+	.prompt										Prompt text
+
+	(history_file, history_dir)					Set the history file and directory. 
+
+datahandler.py								The code that reads/write/adds/destroys/etc data.
+
+
+KeyWord.py									For creating a list of keywords that can execute when a series
+											of keywords are found.
+
+	set_default(function name)     			Set the default function.
+
+	new([ list of keywords ], function)     Sets a function to a series of keywords.
+
+	new(["set", "file"], Set_Filename)      
+			$ set file "filename"      		will call the function Set_Filename and pass the string
+								  		"filename" to the function.
+
+	
+	get([ list of keywords ])          		Will retrieve the keyword and return any portion of the list
+										that was not found.
+
+	get(["alpha", "beta", "gamma", "delta" ])  If gamma doesn't exist under beta, then it will return
+											[ ["alpha", "beta"], ["gamma", "delta"] ] Where [ "gamma", "delta"]
+											are passed as arguments to the function returned by ["alpha", "beta"]
+
+
+	execute([list of keywords])        		Will automagically call the function and pass the remainder as arguments 
+										to the function.
+
+
+											If FLAGS is set to NO_ARGS, then the function will fail as no arguments are
+										meant for that series of keywords.
+
+
+Splitter									For splitting strings by dilimiters.
+
+	append_delimiter(head, tail [, flags = ] )
+					
+				flags = DISCARD_STRING		Do not add string to list.
+				        DISCARD_DELIMITER   Do not add delimiters to string.
+
+	split(string)							Split the string.
