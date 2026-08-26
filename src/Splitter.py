@@ -17,6 +17,8 @@ class Splitter:
 
     delimiters = []
 
+    spacers    = [" "]
+
     DISCARD_STRING = 1
 
     DISCARD_DELIMITER = 2
@@ -32,6 +34,14 @@ class Splitter:
         self.delms.append([head, len(head), tail, len(tail), flags])
 
     @classmethod
+    def add_spacer(self, spc):
+        if len(spc) > 1:
+            return()
+        self.spacers.append(spc)
+
+
+
+    @classmethod
     def split(self, instr):
 
         A = []
@@ -41,46 +51,59 @@ class Splitter:
         tail = -1
 
         while x < len(instr):
-            if instr[x] == " ":
+            for sp in self.spacers:
+                if sp == instr[x]:
+                    sp = ""
+                    break;
+            if sp == "":
                 x+=1
                 continue
 
-            c = False
+            pos = [0,0]
+           
             for d in self.delms:
                 if d[0] == instr[x:x+d[1]]:
-                    c = True
+                    tail = instr[x+d[1]:].find(d[2])
+                    if tail < 0:
+                        d = None
+                    else:
+                        tail = tail + x + d[1]
+
+                        if d[4] & self.DISCARD_STRING:
+                            tail = tail + d[3] 
+                            break
+
+                        if d[4] & self.DISCARD_DELMS:
+                            pos = [x+d[1], tail]
+                        else:
+                            pos = [x, tail+d[3]]
+                        x = x + d[3]
+                        print(pos, "   ", x, ":", tail)
                     break
-
-            if c == True:                       # Delm found
-                tail = instr[x+d[1]:].find(d[2])
-                if tail < 0:                    # If tail not found, reset tail.
-                    c = False
                 else:
-                    tail += x+d[3]+1
+                    d = None
 
-            if c == False:                      # Read normal string.
+            if d == None:
                 tail = x
                 while True:
                     tail+=1
                     if tail >= len(instr):
+                        pos = [x,tail]
                         break
-                    elif instr[tail] == " ":
+                    for sp in self.spacers:
+                        if instr[tail] == sp:
+                            pos=[x, tail]
+                            sp = ""
+                            break
+                    if sp == "":
                         break
 
-            if tail > 0:
+            x = tail+1
 
-                if d[4] & self.DISCARD_DELMS:
-                    x+=d[1]
-                    tail-=d[3]
+            if pos[0] != pos[1]:
+               
+                A.append(instr[pos[0]:pos[1]])
 
-                if not(d[4] & self.DISCARD_STRING):
-                    A.append(instr[x:tail])
-
-                x = tail
-
-            x+=1
-
-        return(A) 
-
+        return(A)
 
 

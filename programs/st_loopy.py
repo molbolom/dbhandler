@@ -29,6 +29,8 @@ class stloopy:
         Splitter.new_delm("{", "}", Splitter.DISCARD_DELIMITER)
         Splitter.new_delm("'", "'")
 
+        Splitter.add_spacer(",")
+        Splitter.add_spacer(";")
 
     def helpme():
         print("help             This help.")
