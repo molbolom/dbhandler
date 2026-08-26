@@ -37,6 +37,10 @@ Usage:
 		set_default(function)					Sets a default function 
 					for when a KeyWord doesn't exist.
 
+        set_errortrap(function)                 Sets a function that will
+                    send all arguments to a function so the programmer
+                    can utilize error handling.
+                  
 		new(list, function, FLAGS)				Sets the list of keywords
 					to the function.
 
