@@ -14,7 +14,8 @@ class KeyWord:
     
     keys = ["default", 0, 0, None]
 
-    Default = False
+    Default   = False
+    ErrorTrapFunc = 0
 
     NO_ARGS = 1
 
@@ -25,12 +26,22 @@ class KeyWord:
         self.keys[KEY_FUNC] = function
 
     @classmethod
+    def set_errortrap(self, function):
+        self.ErrorTrapFunc = function
+
+    @classmethod
     def execute(self, keylist):
         A = self.get(keylist)
+        
         if A[0] == self.keys:
             if self.Default == True:
                 self.keys[KEY_FUNC](keylist)
             return() 
+      
+        if A[0][KEY_FUNC] == 0:
+            if self.ErrorTrapFunc != 0:
+                self.ErrorTrapFunc(keylist)
+            return()
 
         if (A[0][KEY_FLAGS] & self.NO_ARGS):
             if A[1] != None:
@@ -86,7 +97,22 @@ class KeyWord:
             return([keys, keylist[x:]])
 
                     
-                
+
+def default(ARGS):
+    print(ARGS)
+
+def nondefault(ARGS):
+    print("Non Default")
+    print(ARGS)
+
+def errortrap(ARGS):
+    print(ARGS)
+
+KeyWord.set_default(default)
+KeyWord.set_errortrap(errortrap)
+
+KeyWord.new(["alpha", "beta"], nondefault)
+KeyWord.new(["alpha", "gamma", "delta"], nondefault)
 
 
 
