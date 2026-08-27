@@ -12,6 +12,9 @@ from src.datahandler import DBHandler as dbh
 
 class stloopy:
 
+    delm = "x"
+
+    data = {"width":0, "height":0, "contig":0, "noncontig":0}
     @classmethod
     def __init__(self):
         cli(history_file = ".st_loopy.rc")
@@ -23,7 +26,13 @@ class stloopy:
         KeyWord.new(["print", "config"], self.print_config, KeyWord.NO_ARGS)
         KeyWord.new(["set", "prompt"], self.set_prompt)
         KeyWord.new(["set", "file"], self.set_csv_file_name)
-        KeyWord.new(["set", "fields"], self.set_fieldnames)
+        KeyWord.new(["set", "delim"], self.set_delm)
+        KeyWord.new(["set", "game"], self.set_game)
+        KeyWord.new(["write"], dbh.fwrite_data, FLAGS = KeyWord.NO_ARGS)
+        KeyWord.new(["undo"], dbh.undo_data, FLAGS = KeyWord.NO_ARGS)
+        KeyWord.new(["define"], self.define)
+
+
 
         Splitter.new_delm("\"", "\"")
         Splitter.new_delm("{", "}", Splitter.DISCARD_DELIMITER)
@@ -32,21 +41,51 @@ class stloopy:
         Splitter.add_spacer(",")
         Splitter.add_spacer(";")
 
+        dbh.set_fields(["width", "height", "contig", "noncontig"])
+
+
     def helpme():
         print("help             This help.")
         print("print")
         print("      data n     Print n number of stored data until q is pressed.")
         print("      config     Print settings.")
         print("set              Sets configuration settings.")
+        print("    game WxH     Sets the width and height of the game data to be ")
+        print("                    added to the file.")
         print("    file name    Sets file to name.")
         print("    fields n     Sets fields to n.")
         print("                    n is either a list of field names, or an integer")
         print("                    for the length of the fields if field names is")
         print("                    not used.")
         print("    prompt p     Sets prompt to string p.")
+        print("    delim n      Sets the delimiter for entering data for the file.")
         print("write            Write data to file.")
         print("undo             Removes the last data that was inserted.")
         print("quit             Exit program.")
+        print("\n\n")
+        print("define field n   Set field as n. Then the rest of the data doesn't")
+        print("                 need to be entered.")
+        print("WxH CxN          Temporary data that will be written to the file.")
+    
+
+    @classmethod
+    def set_game(self, ARGS):
+        C = None
+        if len(ARGS) == 2:
+            if ARGS[0].isnumeric() and ARGS[1].isnumeric():
+                C = [int(ARGS[0]), int(ARGS[1]) ]
+        elif len(ARGS) == 1:
+            C = ARGS[0].split("x")
+            if C[0].isnumeric() and C[1].isnumeric():
+                C = [int(C[0]), int(C[1]) ]
+
+        if C != None:
+            self.data["width"]  = C[0]
+            self.data["height"] = C[1]
+        
+
+
+
 
     def quit():
         cli.write_history() 
@@ -70,8 +109,23 @@ class stloopy:
              
     @classmethod
     def print_config(self):
-        print(f"prompt = \"{cli.prompt}\"")
-        print(f"filename = {dbh.filename}")
+        print(f"prompt         = \"{cli.prompt}\"")
+        print(f"filename       = {dbh.filename}")
+        print(f"Data delimiter = \"{self.delm}\"")
+
+        for f in dbh.fieldnames:
+            if f == "width":
+                header = "fields         = "
+            else:
+                header = "                 "
+
+            if self.data[f] == 0:
+                msg = f"{header}{f:10}"
+            else:
+                msg = f"{header}{f:10} : {self.data[f]}"
+            print(msg)
+
+            
 
     def set_csv_file_name(ARGS):
 
@@ -99,9 +153,61 @@ class stloopy:
                     
             return(False)
 
-       
-    def set_fieldnames(ARGS):
-        print(ARGS)
+    @classmethod
+    def set_delm(self, ARGS):   
+        if len(ARGS) > 1:
+            return()
+        if len(ARGS[0]) > 1:
+            return()
+        self.delm = ARGS[0]
+
+#######################################################################
+#
+#           No need for set field names
+#
+#######################################################################
+
+#    @classmethod
+#    def set_fieldnames(self, ARGS):
+#        if len(ARGS) == 1:
+#            if ARGS[0].isnumeric():
+#                dbh.fieldc = int(ARGS[0])
+#                dbh.fieldnames = None
+#                self.data = [ 0 for n in range(dbh.fieldc) ]
+#
+#        else:
+#            dbh.fieldc = 0
+#            dbh.fieldnames = [ f for f in ARGS ]
+#            self.data = { fn:0 for fn in ARGS }
+        
+
+#######################################################################
+#
+#
+#
+#
+#----------------------------------------------------------------------
+#                           TODO
+#
+#
+#   Need to check to ensure it writes to either a dict or an array.
+#                           WHY???
+#   This is for ST loopy, and I know what this does...There's no need
+#   to make this universal.
+#
+#######################################################################
+
+    @classmethod
+    def define(self, ARGS):
+
+        if len(ARGS) != 2:
+            return()
+
+        for f in dbh.fieldnames:
+            if ARGS[0] == f:
+                if ARGS[1].isnumeric():
+                    self.data[ARGS[0]] = int(ARGS[1])
+        
         
 
 stl = stloopy()

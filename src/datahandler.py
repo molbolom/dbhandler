@@ -8,7 +8,6 @@
 
 import csv
 
-import random           # Temporary import
 
 class DBHandler:
 
@@ -42,7 +41,15 @@ class DBHandler:
             return(False)
 
         return(True)
-   
+
+#   undo_data()
+#       Removes the last data written to self.data.
+
+    @classmethod
+    def undo_data(self):
+        if len(self.data) > 1:
+            self.data.pop()
+
 # add_data(data)
 #                   Will add data to internal running script.
 
