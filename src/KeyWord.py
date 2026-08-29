@@ -32,7 +32,7 @@ class KeyWord:
     @classmethod
     def execute(self, keylist):
         A = self.get(keylist)
-        
+
         if A[0] == self.keys:
             if self.Default == True:
                 self.keys[KEY_FUNC](keylist)
