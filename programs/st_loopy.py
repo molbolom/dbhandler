@@ -13,7 +13,7 @@ from src.datahandler import DBHandler as dbh
 class stloopy:
 
     delm = "x"
-
+    game = {"width":0, "height":0 } 
     data = {"width":0, "height":0, "contig":0, "noncontig":0}
     @classmethod
     def __init__(self):
@@ -37,10 +37,12 @@ class stloopy:
         Splitter.new_delm("\"", "\"")
         Splitter.new_delm("{", "}", Splitter.DISCARD_DELIMITER)
         Splitter.new_delm("'", "'")
+        Splitter.new_delm("[", "]", Splitter.DISCARD_DELIMITER)
 
         Splitter.add_spacer(",")
         Splitter.add_spacer(";")
 
+        
         dbh.set_fields(["width", "height", "contig", "noncontig"])
 
 
@@ -51,6 +53,7 @@ class stloopy:
         print("      config     Print settings.")
         print("set              Sets configuration settings.")
         print("    game WxH     Sets the width and height of the game data to be ")
+        print("    game W H     Same as set game WxH.")
         print("                    added to the file.")
         print("    file name    Sets file to name.")
         print("    fields n     Sets fields to n.")
@@ -80,8 +83,8 @@ class stloopy:
                 C = [int(C[0]), int(C[1]) ]
 
         if C != None:
-            self.data["width"]  = C[0]
-            self.data["height"] = C[1]
+            self.game["width"]  = C[0]
+            self.game["height"] = C[1]
         
 
 
@@ -119,11 +122,14 @@ class stloopy:
             else:
                 header = "                 "
 
-            if self.data[f] == 0:
-                msg = f"{header}{f:10}"
+            if (f == "width") or (f == "height"):
+                msg = f"{header}{f:10} : {self.game[f]}"
             else:
-                msg = f"{header}{f:10} : {self.data[f]}"
+                msg = f"{header}{f:10}"
+
             print(msg)
+
+        print(f"History file   = {cli.historyrc}")
 
             
 
