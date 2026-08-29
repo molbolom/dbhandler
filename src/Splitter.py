@@ -62,6 +62,7 @@ class Splitter:
         tail = -1
         discardstring = False
 
+
         while x < len(instr):
             if head < 0:
                 head = x                    # Start read of string.
@@ -79,9 +80,9 @@ class Splitter:
                         if d[4] & self.DISCARD_STRING:
                             discardstring = True
                         if d[4] & self.DISCARD_DELMS:
-                            tail -= 1
+                            tail += x + d[1]  
                             head += d[1]
-                            x += tail + d[3]
+                            x = tail + d[3]
                             break 
                         else:
                             tail += x + d[1] + d[3] 
