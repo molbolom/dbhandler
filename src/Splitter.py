@@ -12,6 +12,18 @@
 #   "{", 1, "}", 1, DISCARD_DELIMITER   Will return everything between {, }, a null character
 #                                       if everything is spaces. 
 
+#############################################################################################
+#
+#   TODO            TODO            TODO            TODO    
+#
+#       Add a routine and flag for splitting a string via code like statements.
+#
+#       this = something;   would become [this, something]
+#
+#       this = something; andthis = somethingelse;   would become [this, something], [andthis, somethingelse]
+#
+#############################################################################################
+
 class Splitter:
 
 
@@ -93,80 +105,3 @@ class Splitter:
 
         return(A)
 
-#     @classmethod
-#     def split(self, instr):
-# 
-#         A = []
-# 
-#         x = 0
-# 
-#         tail = -1
-# 
-#         while x < len(instr):
-#             for sp in self.spacers:
-#                 if sp == instr[x]:
-#                     sp = ""
-#                     break;
-#             if sp == "":
-#                 x+=1
-#                 continue
-# 
-#             pos = [0,0]
-#            
-#             for d in self.delms:
-#                 if d[0] == instr[x:x+d[1]]:
-#                     tail = instr[x+d[1]:].find(d[2])
-#                     if tail < 0:
-#                         d = None
-#                     else:
-#                         tail = tail + x + d[1]
-# 
-#                         if d[4] & self.DISCARD_STRING:
-#                             tail = tail + d[3] 
-#                             break
-# 
-#                         if d[4] & self.DISCARD_DELMS:
-#                             pos = [x+d[1], tail]
-#                         else:
-#                             pos = [x, tail+d[3]]
-#                         x = x + d[3]
-#                         print(pos, "   ", x, ":", tail)
-#                     break
-#                 else:
-#                     d = None
-# 
-#             if d == None:
-#                 tail = x
-#                 while True:
-#                     tail+=1
-#                     if tail >= len(instr):
-#                         pos = [x,tail]
-#                         break
-#                     for sp in self.spacers:
-#                         if instr[tail] == sp:
-#                             pos=[x, tail]
-#                             sp = ""
-#                             break
-#                     if sp == "":
-#                         break
-# 
-#             x = tail+1
-# 
-#             if pos[0] != pos[1]:
-#                
-#                 A.append(instr[pos[0]:pos[1]])
-# 
-#         return(A)
-
-Splitter.new_delm("\"", "\"")
-Splitter.new_delm("[", "]")
-Splitter.new_delm("{", "}")
-Splitter.new_delm("'", "'")
-Splitter.new_delm("##", "##", flags = Splitter.DISCARD_STRING)
-
-while True:
-    a = input("Input a string $ ")
-    if a == "quit":
-        break
-    S = Splitter.split(a)
-    print(S)
