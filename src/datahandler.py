@@ -66,9 +66,9 @@ class DBHandler:
 
         if self.fieldnames != None:
             if self.data == None:
-                self.data = [ {self.fieldnames[x]:D[x] for x in range(c)} ]
+                self.data = [ { self.fieldnames[x]:D[self.fieldnames[x]] for x in range(c)} ]
             else:
-                self.data.append({ self.fieldnames[x]:D[x] for x in range(c) })
+                self.data.append({ self.fieldnames[x]:D[self.fieldnames[x]] for x in range(c) })
         else:
             if self.data == None:
                 self.data = [ [ d for d in D ] ]
@@ -86,7 +86,6 @@ class DBHandler:
         if self.filename == "":
             return(False)
 
-        print(" X  : : ", self.fieldnames)
         try:
             with open(self.filename, "a", newline="") as dbhf:
     
@@ -97,7 +96,7 @@ class DBHandler:
             #
             #######################
                 if header == True:     
-                    if self.fieldnames != None:     
+                    if self.fieldc == 0:     
                         writer = csv.DictWriter(dbhf, quoting = csv.QUOTE_NONNUMERIC, fieldnames=self.fieldnames)
                         writer.writeheader()
                 else:
@@ -160,7 +159,8 @@ class DBHandler:
                 for row in reader:
     
                     if fd == None:                  # Store all data.
-                        self.data.append( { f:int(row[f]) for f in row} )
+                        print("Here")
+                        self.data.append( { f:int(row[f]) for f in row } ) # { f:int(row[f]) for f in row} )
                     else:
                         for f in fd:                # Search field data.
                             found = False
