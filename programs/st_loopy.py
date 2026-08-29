@@ -33,6 +33,7 @@ class stloopy:
         KeyWord.new(["write"], dbh.fwrite_data, FLAGS = KeyWord.NO_ARGS)
         KeyWord.new(["undo"], dbh.undo_data, FLAGS = KeyWord.NO_ARGS)
         KeyWord.new(["define"], self.define)
+        KeyWord.new(["clear"], self.clear, FLAGS = KeyWord.NO_ARGS)
 
 
 
@@ -66,6 +67,7 @@ class stloopy:
         print("read data                    Loads all data stored in file.")
         print("          fieldlist[numbers]   Reads only the fields given that    ")
         print("                               contain numbers.")
+        print("clear                        Clear data after reading data.")
         print("write                        Write data to file.")
         print("undo                         Removes the last data that was inserted.")
         print("quit                         Exit program.")
@@ -73,7 +75,29 @@ class stloopy:
         print("define field n               Set field as n. Then the rest of the data doesn't")
         print("                                need to be entered.")
         print("CxN                          Game data that is stored til written to file.")
-    
+
+
+#########################################################################
+#
+#       clear()     Clears the internally stored data after a read.
+#                   It may be a good idea to add certain functions to 
+#                   a list of arguments that can be run within 
+#                   DBHandler.execute()
+#
+#########################################################################
+
+    def clear():
+        dbh.data = None
+
+#########################################################################
+#
+#   set_game( list )
+#
+#   Sets the game board,  WxH or W H
+#
+#   Does nothing if W and H are not correct. 
+#
+#########################################################################
 
     @classmethod
     def set_game(self, ARGS):
@@ -90,16 +114,39 @@ class stloopy:
 
         if C != None:
             self.game = { "width":C[0], "height":C[1], "contig":0, "noncontig":0}
-#             self.game["width"]  = C[0]
-#             self.game["height"] = C[1]
         
 
 
+#########################################################################
+#
+#   quit()
+#           Quits the program and writes the history file.
+#
+#
+#########################################################################
 
 
     def quit():
         cli.write_history() 
         quit()
+
+#########################################################################
+#
+#   print_data( list ) 
+#
+#       Print the locally stored data.
+#
+#       list = ["games"]    Will print out all the games that were
+#                           played in the current session.
+#
+#       list = ["games", "-n"]   Will list the last n games that were
+#                           stored.
+#
+#       list = ["games", "span", "n"]  Will allow the user to scroll
+#                           through all the games played, or at least
+#                           until the user cancels the scrolling.
+#
+#########################################################################
 
 
     @classmethod
@@ -148,6 +195,13 @@ class stloopy:
                 print(f"  {d['width']:2}    :  {d['height']:2}    :  {d['contig']:2}    :  {d['noncontig']:2}")
 
 
+#########################################################################
+#
+#       run()
+#           Runs st_loopy.py 
+#
+#
+#########################################################################
 
     @classmethod
     def run(self):
@@ -157,6 +211,16 @@ class stloopy:
 
             KeyWord.execute(args)
 
+#########################################################################
+#
+#       parse_str()         Default function.
+#                           if only CxN is given, then will add the data
+#                           C to the contig key, and N to the noncontig
+#                           key, then copy the data to the current game
+#                           data list.
+#
+#
+#########################################################################
    
     @classmethod
     def parse_str(self, ARGS):
@@ -176,14 +240,19 @@ class stloopy:
                 self.game["noncontig"] = int(ARGS[1])
                 dbh.add_data(self.game)
             
-        print("String that was passed is : ", ARGS)
-
     def set_prompt(ARGS):
         if ARGS == None:
             return()
         
         cli.prompt = ARGS[0][1:-1]
              
+#########################################################################
+#
+#       print_config()
+#               Self explanatory, heh.
+#
+#########################################################################
+
     @classmethod
     def print_config(self):
         print(f"prompt         = \"{cli.prompt}\"")
@@ -203,7 +272,14 @@ class stloopy:
 
         print(f"History file   = {cli.historyrc}")
 
-            
+#########################################################################
+#
+#       set_csv_file_name( list )
+#                       Sets the file name, and initializes it if it
+#               doesn't exist.
+#
+#########################################################################
+ 
 
     def set_csv_file_name(ARGS):
         if ARGS == None:
@@ -219,7 +295,7 @@ class stloopy:
 
         if Path.exists(filename) == True:
             dbh.filename = filename
-            return(True)
+            return()
         else:
             yn = cli.ynmessage("File doesn't exist. Do you want to create it? [ y or n ] ")
             if yn == True:
@@ -230,7 +306,15 @@ class stloopy:
                 except:
                     print("Can not create file.")
                     
-            return(False)
+            return()
+
+#########################################################################
+#
+#       set_delm( LIST )
+#           Sets the keyboard delimiter for entering contig & noncontig
+#           data. (Primary purpose is to allow one to use they keypad
+#           for quicker entry of data)
+#########################################################################
 
     @classmethod
     def set_delm(self, ARGS):   
@@ -241,32 +325,18 @@ class stloopy:
         self.delm = ARGS[0]
 
 
-#######################################################################
+#########################################################################
 #
+#       read_data( list )
+#                   Read data from file.
 #
+#       read data fieldA[a,b] fieldB [c]  Will read all data where
+#                   fieldA contains a or b AND fieldB contains c.
 #
+#       For single items, this should work as
+#       read data fieldA a fieldB b
 #
-#----------------------------------------------------------------------
-#                           TODO
-#
-#
-#   Need to check to ensure it writes to either a dict or an array.
-#                           WHY???
-#   This is for ST loopy, and I know what this does...There's no need
-#   to make this universal.
-#
-#######################################################################
-
-    @classmethod
-    def define(self, ARGS):
-
-        if (ARGS == None) or (len(ARGS) != 2):
-            return()
-
-        for f in dbh.fieldnames:
-            if ARGS[0] == f:
-                if ARGS[1].isnumeric():
-                    self.data[ARGS[0]] = int(ARGS[1])
+#########################################################################
 
     @classmethod
     def read_data(self, ARGS):
