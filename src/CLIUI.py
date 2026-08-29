@@ -18,7 +18,7 @@ class CLIUI:
     @classmethod
     def __init__(self, history_file = "", history_dir=""):
 
-        if (history_file == "") and (self.history_file == ""):
+        if history_file == "":
             print("No history file to load. All history will be during this instance instead.")
             return()
         
@@ -33,7 +33,7 @@ class CLIUI:
 
         self.initialized = True
 
-        if Path.exists(self.history_file):          
+        if Path.exists(self.historyrc):          
             readline.read_history_file(self.historyrc)
         else:                                           # Go ahead and write a history file.
                                                         # just to make sure it's there.
