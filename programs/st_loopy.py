@@ -60,7 +60,7 @@ class stloopy:
         print("set                          Sets configuration settings.")
         print("    game WxH                 Sets the width and height of the game data to be ")
         print("    game W H                 Same as set game WxH.")
-        print("    file name                Sets file to name.")
+        print("    file name                Sets file to name. (Will auto check for suffix .st.csv)")
         print("    prompt p                 Sets prompt to string p.")
         print("    delim n                  Sets the delimiter for entering data for the file.")
         print("read data                    Loads all data stored in file.")
@@ -282,12 +282,12 @@ class stloopy:
     def set_csv_file_name(ARGS):
         if ARGS == None:
             return()
-
+        
         if len(ARGS) == 1:
-            if ARGS[0][-3:] != "csv":
-                print("File is not a csv file.")
-                return(False)
-            filename = ARGS[0]
+            if ARGS[0][-7:] != ".st.csv":
+                filename = ARGS[0]+".st.csv"
+            else:
+                filename = ARGS[0]
         else:
             return(False)
 
@@ -350,11 +350,6 @@ class stloopy:
                         else:
                             a[1][x] = int(a[1][x])
                 dbh.fread_data(A)
-
-                
-     
-        print(dbh.data)
-       
 
         
 
