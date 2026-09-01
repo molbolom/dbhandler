@@ -32,7 +32,6 @@ class stloopy:
         KeyWord.new(["set", "game"], self.set_game)
         KeyWord.new(["write"], dbh.fwrite_data, FLAGS = KeyWord.NO_ARGS)
         KeyWord.new(["undo"], dbh.undo_data, FLAGS = KeyWord.NO_ARGS)
-        KeyWord.new(["define"], self.define)
         KeyWord.new(["clear"], self.clear, FLAGS = KeyWord.NO_ARGS)
 
 
@@ -72,7 +71,6 @@ class stloopy:
         print("undo                         Removes the last data that was inserted.")
         print("quit                         Exit program.")
         print("\n\n")
-        print("define field n               Set field as n. Then the rest of the data doesn't")
         print("                                need to be entered.")
         print("CxN                          Game data that is stored til written to file.")
 
