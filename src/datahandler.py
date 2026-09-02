@@ -47,8 +47,11 @@ class DBHandler:
 
     @classmethod
     def undo_data(self):
-        if len(self.data) > 1:
-            self.data.pop()
+        if self.data != None:
+            if len(self.data) == 1:
+                self.data = None
+            else:
+                self.data.pop()
 
 # add_data(data)
 #                   Will add data to internal running script.
@@ -159,7 +162,6 @@ class DBHandler:
                 for row in reader:
     
                     if fd == None:                  # Store all data.
-                        print("Here")
                         self.data.append( { f:int(row[f]) for f in row } ) # { f:int(row[f]) for f in row} )
                     else:
                         for f in fd:                # Search field data.
