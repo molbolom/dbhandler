@@ -55,12 +55,13 @@ class CLIUI:
     def input(self):
         return(input(self.prompt))
 
-    def ynmessage(instr):
+    def ynmessage(instr, ANYKEY=False):
         yn = input(instr)
         yn = yn.lower()
-        if (yn == "y") or (yn == "yes"):
-            return(True)
-        else:
+        if (yn == "n") or (yn == "no"):
             return(False)
+        else:
+            if (ANYKEY == True) or ( (yn == "y") or (yn == "yes") ) :
+                return(True)
 
 

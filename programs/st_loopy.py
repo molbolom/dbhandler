@@ -1,5 +1,6 @@
 
 import sys
+import os
 from pathlib import Path
 
 sys.path.insert(0, Path.cwd().as_posix())
@@ -24,6 +25,7 @@ class stloopy:
         KeyWord.new(["help"], self.helpme, FLAGS = KeyWord.NO_ARGS)
         KeyWord.new(["quit"], self.quit, FLAGS = KeyWord.NO_ARGS)
         KeyWord.new(["print", "config"], self.print_config, KeyWord.NO_ARGS)
+        KeyWord.new(["print", "files"], self.print_files, KeyWord.NO_ARGS)
         KeyWord.new(["print", "games"], self.print_data)
         KeyWord.new(["read", "data"], self.read_data)
         KeyWord.new(["set", "prompt"], self.set_prompt)
@@ -56,10 +58,13 @@ class stloopy:
         print("            span n               If the number of games is large, then ")
         print("                                 span the entire list only printing n  ")
         print("                                 number of games until end.")
+        print("      files                  Print a list of files that are stored in the")
+        print("                                 current directory.")
         print("      config                 Print settings.")
         print("set                          Sets configuration settings.")
-        print("    game WxH                 Sets the width and height of the game data to be ")
-        print("    game W H                 Same as set game WxH.")
+        print("    game WxH                 Sets the width and height of the game data to be")
+        print("                                 played.")
+        print("    game W H                 Same as $ set game WxH.")
         print("    file name                Sets file to name. (Will auto check for suffix .st.csv)")
         print("    prompt p                 Sets prompt to string p.")
         print("    delim n                  Sets the delimiter for entering data for the file.")
@@ -272,6 +277,29 @@ class stloopy:
 
 #########################################################################
 #
+#       read_files()
+#                       Reads all .st.csv files in the current directory
+#               that the user can load for reading and writing.
+#
+#########################################################################
+
+    def print_files():
+       
+        A = []
+        
+        for f in os.listdir():
+            if f.endswith(".st.csv"):
+                A.append(f)
+
+        if len(A) == 0:
+            print("No files in the current directory.")
+        else:
+            for f in A:
+                print(f"   {f}")
+                
+
+#########################################################################
+#
 #       set_csv_file_name( list )
 #                       Sets the file name, and initializes it if it
 #               doesn't exist.
@@ -295,7 +323,7 @@ class stloopy:
             dbh.filename = filename
             return()
         else:
-            yn = cli.ynmessage("File doesn't exist. Do you want to create it? [ y or n ] ")
+            yn = cli.ynmessage(f"File \"{filename}\" doesn't exist. Do you want to create it? [ y or n ] ")
             if yn == True:
                 try:
                     dbh.filename = filename 
